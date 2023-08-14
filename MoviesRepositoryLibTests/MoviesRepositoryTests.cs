@@ -1,24 +1,50 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoviesRepositoryLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+// NuGet Microsoft.EntityFrameworkCore.SqlServer
 
 namespace MoviesRepositoryLib.Tests
 {
-    [TestClass()]
+    //[TestClass()]
     public class MoviesRepositoryTests
     {
-        private MoviesRepository _repo = new();
+        private const bool useDatabase = true;
+        private static MoviesDbContext _dbContext;
+        private IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
         private readonly Movie _badMovie = new() { Title = "The Matrix", Year = 1894 };
+
+        [ClassInitialize]
+        public static void InitOnce(TestContext context)
+        {
+            if (useDatabase)
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
+                optionsBuilder.UseSqlServer(Secrets.ConnectionString);
+                _dbContext = new MoviesDbContext(optionsBuilder.Options);
+                //List<Movie> all = _dbContext.Movies.ToList();
+                //_dbContext.RemoveRange(all);
+
+                //_dbContext.SaveChanges();
+            }
+        }
+
 
         [TestInitialize]
         public void Init()
         {
-            _repo = new();
+            if (useDatabase)
+            {
+                _repo = new MoviesRepositoryDB(_dbContext);
+                _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE dbo.Movies");
+            }
+            else { _repo = new MoviesRepositoryList(); }
+
             _repo.Add(new Movie() { Title = "The Matrix", Year = 1999 });
             _repo.Add(new Movie() { Title = "Snehvide", Year = 1937 });
             _repo.Add(new Movie() { Title = "Løvejagten", Year = 1907 });

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace MoviesRepositoryLib
 {
-    public class MoviesRepository
+    public class MoviesRepositoryList : IMoviesRepository
     {
         private int _nextId = 1;
         private readonly List<Movie> _movies = new();
 
-        public MoviesRepository()
+        public MoviesRepositoryList()
         {
             //_movies.Add(new Movie() { Id = _nextId++, Title = "The Matrix", Year = 1999 });
             //_movies.Add(new Movie() { Id = _nextId++, Title = "Snehvide", Year = 1937 });
@@ -20,7 +20,7 @@ namespace MoviesRepositoryLib
         public List<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
         {
 
-            List<Movie> result = new(_movies);
+            List<Movie> result = new List<Movie>(_movies);
             // Filtering
             if (yearAfter != null)
             {
