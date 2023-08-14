@@ -15,7 +15,7 @@ namespace MoviesRepositoryLib.Tests
     public class MoviesRepository2Tests
     {
         private const bool useDatabase = false;
-        private static MoviesDbContext _dbContext;
+        private static MoviesDbContext? _dbContext;
         private static IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
 
@@ -26,9 +26,8 @@ namespace MoviesRepositoryLib.Tests
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
                 optionsBuilder.UseSqlServer(Secrets.ConnectionString);
-                // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                optionsBuilder.EnableSensitiveDataLogging();
                 _dbContext = new MoviesDbContext(optionsBuilder.Options);
+                // clean database table: remove all rows
                 _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE dbo.Movies");
                 _repo = new MoviesRepositoryDB(_dbContext);
             }
@@ -58,7 +57,7 @@ namespace MoviesRepositoryLib.Tests
         [TestMethod()]
         public void GetTest()
         {
-
+            // sorting + filtering testing
         }
 
         [TestMethod()]
