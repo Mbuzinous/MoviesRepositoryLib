@@ -40,11 +40,11 @@ namespace MoviesRepositoryLib.Tests
         [TestMethod()]
         public void AddTest()
         {
-            _repo.Add(new Movie { Title = "A", Year = 1895 });
+            _repo.Add(new Movie { Title = "Z", Year = 1895 });
             Movie snowWhite = _repo.Add(new Movie { Title = "Snehvide", Year = 1937 });
             Assert.IsTrue(snowWhite.Id >= 0);
-            List<Movie> all = _repo.Get();
-            Assert.AreEqual(2, all.Count);
+            IEnumerable<Movie> all = _repo.Get();
+            Assert.AreEqual(2, all.Count());
 
             Assert.ThrowsException<ArgumentNullException>(
                 () => _repo.Add(new Movie { Title = null, Year = 1895 }));
@@ -57,7 +57,16 @@ namespace MoviesRepositoryLib.Tests
         [TestMethod()]
         public void GetTest()
         {
-            // sorting + filtering testing
+            IEnumerable<Movie> movies = _repo.Get(orderBy: "Title");
+
+            Assert.AreEqual(movies.First().Title, "Snehvide");
+
+            movies = _repo.Get(orderBy: "Year");
+            Assert.AreEqual(movies.First().Title, "Z");
+
+            movies = _repo.Get(titleIncludes: "vide");
+            Assert.AreEqual(1, movies.Count());
+            Assert.AreEqual(movies.First().Title, "Snehvide");
         }
 
         [TestMethod()]

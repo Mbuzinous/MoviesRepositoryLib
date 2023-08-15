@@ -13,7 +13,7 @@ namespace MoviesRepositoryLib.Tests
     //[TestClass()]
     public class MoviesRepositoryTests
     {
-        private const bool useDatabase = true;
+        private const bool useDatabase = false;
         private static MoviesDbContext _dbContext;
         private IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
@@ -55,14 +55,14 @@ namespace MoviesRepositoryLib.Tests
         [TestMethod()]
         public void GetTest()
         {
-            List<Movie> movies = _repo.Get();
-            Assert.AreEqual(4, movies.Count);
+            IEnumerable<Movie> movies = _repo.Get();
+            Assert.AreEqual(4, movies.Count());
             Assert.AreEqual(movies.First().Title, "The Matrix");
 
-            List<Movie> sortedMovies = _repo.Get(orderBy: "title");
+            IEnumerable<Movie> sortedMovies = _repo.Get(orderBy: "title");
             Assert.AreEqual(sortedMovies.First().Title, "Abekongen");
 
-            List<Movie> sortedMovies2 = _repo.Get(orderBy: "year");
+            IEnumerable<Movie> sortedMovies2 = _repo.Get(orderBy: "year");
             Assert.AreEqual(sortedMovies2.First().Title, "Løvejagten");
         }
 
@@ -78,7 +78,7 @@ namespace MoviesRepositoryLib.Tests
         {
             Movie m = new() { Title = "Test", Year = 2021 };
             Assert.AreEqual(5, _repo.Add(m).Id);
-            Assert.AreEqual(5, _repo.Get().Count);
+            Assert.AreEqual(5, _repo.Get().Count());
 
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => _repo.Add(_badMovie));
         }
@@ -88,17 +88,17 @@ namespace MoviesRepositoryLib.Tests
         {
             Assert.IsNull(_repo.Remove(100));
             Assert.AreEqual(1, _repo.Remove(1)?.Id);
-            Assert.AreEqual(3, _repo.Get().Count);
+            Assert.AreEqual(3, _repo.Get().Count());
         }
 
         [TestMethod()]
         public void UpdateTest()
         {
-            Assert.AreEqual(4, _repo.Get().Count);
+            Assert.AreEqual(4, _repo.Get().Count());
             Movie m = new() { Title = "Test", Year = 2021 };
             Assert.IsNull(_repo.Update(100, m));
             Assert.AreEqual(1, _repo.Update(1, m)?.Id);
-            Assert.AreEqual(4, _repo.Get().Count);
+            Assert.AreEqual(4, _repo.Get().Count());
 
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => _repo.Update(1, _badMovie));
         }

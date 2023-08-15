@@ -25,9 +25,42 @@ namespace MoviesRepositoryLib
             return movie;
         }
 
-        public List<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
+        public IEnumerable<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
         {
-            return _context.Movies.ToList();
+            //List<Movie> result = _context.Movies.ToList();
+            IQueryable<Movie> query = _context.Movies.AsQueryable();
+            if (yearAfter != null)
+            {
+                query = query.Where(m => m.Year > yearAfter);
+            }
+            if (titleIncludes != null)
+            {
+                query = query.Where(m => m.Title.Contains(titleIncludes));
+            }
+            if (orderBy != null)
+            {
+                orderBy = orderBy.ToLower();
+                switch (orderBy)
+                {
+                    case "title":
+                    case "title_asc":
+                        query = query.OrderBy(m => m.Title);
+                        break;
+                    case "title_desc":
+                        query = query.OrderByDescending(m => m.Title);
+                        break;
+                    case "year":
+                        query = query.OrderBy(m => m.Year);
+                        break;
+                    case "year_desc":
+                        query = query.OrderByDescending(m => m.Year);
+                        break;
+                    default:
+                        break; // do nothing
+                        //throw new ArgumentException("Unknown sort order: " + orderBy);
+                }
+            }
+            return query;
         }
 
         public Movie? GetById(int id)

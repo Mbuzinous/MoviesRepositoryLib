@@ -17,38 +17,43 @@ namespace MoviesRepositoryLib
             //_movies.Add(new Movie() { Id = _nextId++, Title = "Snehvide", Year = 1937 });
         }
 
-        public List<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
+        public IEnumerable<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
         {
-
-            List<Movie> result = new List<Movie>(_movies);
+            IEnumerable<Movie> result = new List<Movie>(_movies);
             // Filtering
             if (yearAfter != null)
             {
-                result = result.Where(m => m.Year > yearAfter).ToList();
+                result = result.Where(m => m.Year > yearAfter);
             }
             if (titleIncludes != null)
             {
-                result = result.Where(m => m.Title?.ToLower().Contains(titleIncludes.ToLower()) ?? false).ToList();
+                result = result.Where(m => m.Title.Contains(titleIncludes));
             }
 
-            // Ordering aka sorting
-            switch (orderBy)
+            // Ordering aka. sorting
+            if (orderBy != null)
             {
-                case null: break;
-                case "title":
-                    result.Sort((m1, m2) => m1.Title.CompareTo(m2.Title));
-                    break;
-                case "titleDesc":
-                    result.Sort((m1, m2) => m2.Title.CompareTo(m1.Title));
-                    break;
-                case "year":
-                    result.Sort((m1, m2) => m1.Year.CompareTo(m2.Year));
-                    break;
-                case "yearDesc":
-                    result.Sort((m1, m2) => m2.Year.CompareTo(m1.Year));
-                    break;
-                default:
-                    throw new ArgumentException("Unknown sort order: " + orderBy);
+                orderBy = orderBy.ToLower();
+                switch (orderBy)
+                {
+                    case "title": // fall through to next case
+                    case "title_asc":
+                        result = result.OrderBy(m => m.Title);
+                        break;
+                    case "title_desc":
+                        result = result.OrderByDescending(m => m.Title);
+                        break;
+                    case "year":
+                    case "year_asc":
+                        result = result.OrderBy(m => m.Year);
+                        break;
+                    case "year_desc":
+                        result = result.OrderByDescending(m => m.Year);
+                        break;
+                    default:
+                        break; // do nothing
+                        //throw new ArgumentException("Unknown sort order: " + orderBy);
+                }
             }
             return result;
         }
