@@ -14,12 +14,14 @@ namespace MoviesRepositoryLib.Tests
     [TestClass()]
     public class MoviesRepository2Tests
     {
-        private const bool useDatabase = false;
+        private const bool useDatabase = true;
         private static MoviesDbContext? _dbContext;
         private static IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
 
         [ClassInitialize]
+
+    // create table ...
         public static void InitOnce(TestContext context)
         {
             if (useDatabase)
