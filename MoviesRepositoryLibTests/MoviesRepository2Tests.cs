@@ -27,7 +27,9 @@ namespace MoviesRepositoryLib.Tests
             if (useDatabase)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
-                optionsBuilder.UseSqlServer(Secrets.ConnectionString);
+                optionsBuilder.UseSqlServer(Secrets.ConnectionStringSimply);
+                // connection string structure
+                //   "Data Source=mssql7.unoeuro.com;Initial Catalog=FROM simply.com;Persist Security Info=True;User ID=FROM simply.com;Password=DB PASSWORD FROM simply.com;TrustServerCertificate=True"
                 _dbContext = new MoviesDbContext(optionsBuilder.Options);
                 // clean database table: remove all rows
                 _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE dbo.Movies");
