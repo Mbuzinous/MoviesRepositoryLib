@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+// NuGet  Microsoft.EntityFrameworkCore
 using Microsoft.Extensions.Options;
+// NuGet Microsoft.EntityFrameworkCore.SqlServer
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoviesRepositoryLib;
 using System;
@@ -11,17 +13,14 @@ using System.Threading.Tasks;
 
 namespace MoviesRepositoryLib.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class MoviesRepository2Tests
     {
         private const bool useDatabase = true;
-        private static MoviesDbContext? _dbContext;
         private static IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
 
         [ClassInitialize]
-
-    // create table ...
         public static void InitOnce(TestContext context)
         {
             if (useDatabase)
@@ -30,7 +29,7 @@ namespace MoviesRepositoryLib.Tests
                 optionsBuilder.UseSqlServer(Secrets.ConnectionStringSimply);
                 // connection string structure
                 //   "Data Source=mssql7.unoeuro.com;Initial Catalog=FROM simply.com;Persist Security Info=True;User ID=FROM simply.com;Password=DB PASSWORD FROM simply.com;TrustServerCertificate=True"
-                _dbContext = new MoviesDbContext(optionsBuilder.Options);
+                MoviesDbContext _dbContext = new(optionsBuilder.Options);
                 // clean database table: remove all rows
                 _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE dbo.Movies");
                 _repo = new MoviesRepositoryDB(_dbContext);
@@ -41,7 +40,9 @@ namespace MoviesRepositoryLib.Tests
             }
         }
 
-        [TestMethod()]
+        // Test methods are execute in alphabetical order
+
+        [TestMethod]
         public void AddTest()
         {
             _repo.Add(new Movie { Title = "Z", Year = 1895 });
@@ -73,7 +74,7 @@ namespace MoviesRepositoryLib.Tests
             Assert.AreEqual(movies.First().Title, "Snehvide");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetByIdTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Tarzan", Year = 1932 });
@@ -85,7 +86,7 @@ namespace MoviesRepositoryLib.Tests
             Assert.IsNull(_repo.GetById(-1));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void RemoveTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Olsenbanden", Year = 1968 });
@@ -97,7 +98,7 @@ namespace MoviesRepositoryLib.Tests
             Assert.IsNull(movie2);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UpdateTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Citizen Kane", Year = 1941 });

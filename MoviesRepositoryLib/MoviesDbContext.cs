@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+// NuGet package Microsoft.EntityFrameworkCore.SqlServer
 
 namespace MoviesRepositoryLib
 {
