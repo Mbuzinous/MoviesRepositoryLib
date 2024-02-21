@@ -26,6 +26,7 @@ namespace MoviesRepositoryLib.Tests
             if (useDatabase)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
+                // https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets
                 optionsBuilder.UseSqlServer(Secrets.ConnectionStringSimply);
                 // connection string structure
                 //   "Data Source=mssql7.unoeuro.com;Initial Catalog=FROM simply.com;Persist Security Info=True;User ID=FROM simply.com;Password=DB PASSWORD FROM simply.com;TrustServerCertificate=True"

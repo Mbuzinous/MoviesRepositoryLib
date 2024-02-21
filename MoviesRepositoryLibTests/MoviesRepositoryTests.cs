@@ -13,7 +13,7 @@ namespace MoviesRepositoryLib.Tests
     //[TestClass()]
     public class MoviesRepositoryTests
     {
-        private const bool useDatabase = false;
+        private const bool useDatabase = true;
         private static MoviesDbContext _dbContext;
         private IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
@@ -25,7 +25,7 @@ namespace MoviesRepositoryLib.Tests
             if (useDatabase)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
-                optionsBuilder.UseSqlServer(Secrets.ConnectionString);
+                optionsBuilder.UseSqlServer(Secrets.ConnectionStringSimply);
                 _dbContext = new MoviesDbContext(optionsBuilder.Options);
                 //List<Movie> all = _dbContext.Movies.ToList();
                 //_dbContext.RemoveRange(all);
