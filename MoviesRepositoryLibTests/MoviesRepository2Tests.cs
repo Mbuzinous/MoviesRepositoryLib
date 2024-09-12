@@ -14,15 +14,19 @@ using System.Threading.Tasks;
 namespace MoviesRepositoryLib.Tests
 {
     [TestClass]
+    [DoNotParallelize]
     public class MoviesRepository2Tests
     {
         private const bool useDatabase = true;
         private static IMoviesRepository _repo;
         // https://learn.microsoft.com/en-us/dotnet/core/testing/order-unit-tests?pivots=mstest
 
-        [ClassInitialize]
-        public static void InitOnce(TestContext context)
+        //[ClassInitialize]
+        //public static void InitOnce(TestContext context)
+        [TestInitialize]
+        public void Init()
         {
+           
             if (useDatabase)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
@@ -40,9 +44,8 @@ namespace MoviesRepositoryLib.Tests
             }
         }
 
-        // Test methods are execute in alphabetical order
-
-        [TestMethod]
+        [TestMethod, Priority(1)]
+        [DoNotParallelize]
         public void AddTest()
         {
             _repo.Add(new Movie { Title = "Z", Year = 1895 });
@@ -59,12 +62,17 @@ namespace MoviesRepositoryLib.Tests
                 () => _repo.Add(new Movie { Title = "B", Year = 1894 }));
         }
 
-        [TestMethod()]
-        public void GetTest()
+        [TestMethod, Priority(2)]
+        [DoNotParallelize]
+        public void GetATest()
         {
+            _repo.Add(new Movie { Title = "Z", Year = 1895 });
+            _repo.Add(new Movie { Title = "Snehvide", Year = 1937 });
+            _repo.Add(new Movie { Title = "Den Store Mand", Year = 1941 });
+
             IEnumerable<Movie> movies = _repo.Get(orderBy: "Title");
 
-            Assert.AreEqual(movies.First().Title, "Snehvide");
+            Assert.AreEqual(movies.First().Title, "Den Store Mand");
 
             movies = _repo.Get(orderBy: "Year");
             Assert.AreEqual(movies.First().Title, "Z");
@@ -74,7 +82,7 @@ namespace MoviesRepositoryLib.Tests
             Assert.AreEqual(movies.First().Title, "Snehvide");
         }
 
-        [TestMethod]
+        [TestMethod, Priority(3)]
         public void GetByIdTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Tarzan", Year = 1932 });
@@ -86,7 +94,8 @@ namespace MoviesRepositoryLib.Tests
             Assert.IsNull(_repo.GetById(-1));
         }
 
-        [TestMethod]
+        [TestMethod, Priority(7)]
+        [DoNotParallelize]
         public void RemoveTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Olsenbanden", Year = 1968 });
@@ -98,7 +107,8 @@ namespace MoviesRepositoryLib.Tests
             Assert.IsNull(movie2);
         }
 
-        [TestMethod]
+        [TestMethod, Priority(10)]
+        [DoNotParallelize]
         public void UpdateTest()
         {
             Movie m = _repo.Add(new Movie { Title = "Citizen Kane", Year = 1941 });

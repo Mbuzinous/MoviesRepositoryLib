@@ -28,7 +28,8 @@ namespace MoviesRepositoryLib
         public IEnumerable<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
         {
             //List<Movie> result = _context.Movies.ToList();
-            IQueryable<Movie> query = _context.Movies.AsQueryable();
+            IQueryable<Movie> query = _context.Movies.ToList().AsQueryable();
+            // Copy ToList()
             if (yearAfter != null)
             {
                 query = query.Where(m => m.Year > yearAfter);

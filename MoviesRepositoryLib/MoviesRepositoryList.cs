@@ -17,6 +17,48 @@ namespace MoviesRepositoryLib
             //_movies.Add(new Movie() { Id = _nextId++, Title = "Snehvide", Year = 1937 });
         }
 
+        public List<Movie> GetAll()
+        {
+            return new List<Movie>(_movies);
+        }
+
+        public Movie? GetById(int id)
+        {
+            return _movies.Find(movie => movie.Id == id);
+        }
+
+        public Movie Add(Movie movie)
+        {
+            movie.Validate();
+            movie.Id = _nextId++;
+            _movies.Add(movie);
+            return movie;
+        }
+
+        public Movie? Remove(int id)
+        {
+            Movie? movie = GetById(id);
+            if (movie == null)
+            {
+                return null;
+            }
+            _movies.Remove(movie);
+            return movie;
+        }
+
+        public Movie? Update(int id, Movie movie)
+        {
+            movie.Validate();
+            Movie? existingMovie = GetById(id);
+            if (existingMovie == null)
+            {
+                return null;
+            }
+            existingMovie.Title = movie.Title;
+            existingMovie.Year = movie.Year;
+            return existingMovie;
+        }
+
         public IEnumerable<Movie> Get(int? yearAfter = null, string? titleIncludes = null, string? orderBy = null)
         {
             IEnumerable<Movie> result = new List<Movie>(_movies);
@@ -56,43 +98,6 @@ namespace MoviesRepositoryLib
                 }
             }
             return result;
-        }
-
-        public Movie? GetById(int id)
-        {
-            return _movies.Find(movie => movie.Id == id);
-        }
-
-        public Movie Add(Movie movie)
-        {
-            movie.Validate();
-            movie.Id = _nextId++;
-            _movies.Add(movie);
-            return movie;
-        }
-
-        public Movie? Remove(int id)
-        {
-            Movie? movie = GetById(id);
-            if (movie == null)
-            {
-                return null;
-            }
-            _movies.Remove(movie);
-            return movie;
-        }
-
-        public Movie? Update(int id, Movie movie)
-        {
-            movie.Validate();
-            Movie? existingMovie = GetById(id);
-            if (existingMovie == null)
-            {
-                return null;
-            }
-            existingMovie.Title = movie.Title;
-            existingMovie.Year = movie.Year;
-            return existingMovie;
         }
     }
 }
