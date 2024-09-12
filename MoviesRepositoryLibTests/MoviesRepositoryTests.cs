@@ -25,7 +25,7 @@ namespace MoviesRepositoryLib.Tests
             if (useDatabase)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<MoviesDbContext>();
-                optionsBuilder.UseSqlServer(Secrets.ConnectionString);
+                optionsBuilder.UseSqlServer(DBSecrets.ConnectionStringSimply);
                 _dbContext = new MoviesDbContext(optionsBuilder.Options);
                 //List<Movie> all = _dbContext.Movies.ToList();
                 //_dbContext.RemoveRange(all);
