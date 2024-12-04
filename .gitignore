@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 DBSecrets.cs
+/MoviesRepositoryLib/Secrets.cs
